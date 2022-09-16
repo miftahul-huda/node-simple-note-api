@@ -10,7 +10,7 @@ class NoteRouter extends CrudRouter{
     static getRouter(logic)
     {
         let router = super.getRouter(logic)
-
+        let me  = this;
         router.get('/by-category-project/:category/:project', function (req, res){
             me.init(req, res);
             let o = req.body;
@@ -21,9 +21,11 @@ class NoteRouter extends CrudRouter{
             let project_id = req.params.project;
             let offset = req.query.offset;
             let limit = req.query.limit;
+            let sort = req.query.sort;
 
-        
-            logic.findByCategoryAndProject(category_id, project_id, offset, limit).then(function (savedO)
+            sort = me.sortToArray(sort)
+
+            logic.findByCategoryAndProject(category_id, project_id, offset, limit, sort).then(function (savedO)
             {
                 res.send(savedO);
             }).catch(function (err){

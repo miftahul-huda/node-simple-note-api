@@ -1,5 +1,7 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const { Op } = require("sequelize");
+const CategoryModel = require('../models/categorymodel');
+const ProjectModel = require('../models/projectmodel');
 
 const CrudLogic = require("./crudlogic");
 
@@ -37,14 +39,19 @@ class NoteLogic extends CrudLogic {
 
     static getOrder()
     {
-        let order = [['createdAt', 'DESC']];
+        let order = [[ 'createdAt', 'DESC']];
         return order;
+    }
+
+    static getModelIncludes()
+    {
+        return [ {model: ProjectModel, as: "project"}, { model: CategoryModel, as: "category"} ];
     }
 
     /* 
         fetch notes based on category_id and project_id
     */
-    static async findByCategoryAndProject(category_id, project_id, offset, limit)
+    static async findByCategoryAndProject(category_id, project_id, offset, limit, sort)
     {
         try 
         {
@@ -84,7 +91,21 @@ class NoteLogic extends CrudLogic {
                 }
             }
 
-            let result = await model.findAndCountAll({ where: where, offset: offset, limit: limit })
+            let opt = { where: where};
+            if(offset != null)
+                opt.offset = offset;
+
+            if(limit != null)
+                opt.limit = limit;
+
+            if(sort != null)
+                opt.sort = sort;
+            
+            opt.include = [ {model: ProjectModel, as: "project"}, { model: CategoryModel, as: "category"} ];
+
+            console.log(opt)
+
+            let result = await model.findAndCountAll(opt)
             return { success: true, payload: result }
 
         }

@@ -33,17 +33,7 @@ class CrudRouter {
             let limit = req.query.limit;
             let sort = req.query.sort;
 
-            let order = sort;
-            let orderArr = null;
-            if(order != null)
-            {
-                orderArr = []
-                let orders = order.split(";")
-                orders.map((ord)=>{
-                    ord = ord.split(",")
-                    orderArr.push(ord)
-                })
-            }
+            let orderArr = me.sortToArray(sort)
 
             logic.findAll(null, offset, limit, orderArr ).then(function (os)
             {
@@ -66,17 +56,7 @@ class CrudRouter {
             let limit = req.query.limit;
             let sort = req.query.sort;
 
-            let order = sort;
-            let orderArr = null;
-            if(order != null)
-            {
-                orderArr = []
-                let orders = order.split(";")
-                orders.map((ord)=>{
-                    ord = ord.split(",")
-                    orderArr.push(ord)
-                })
-            }
+            let orderArr = me.sortToArray(sort)
 
             logic.findByKeyword(search, offset, limit, orderArr).then(function (os)
             {
@@ -140,6 +120,32 @@ class CrudRouter {
 
     static init(){ 
 
+    }
+
+    static sortToArray(sort)
+    {
+        let order = sort;
+        let orderArr = null;
+        if(order != null)
+        {
+            orderArr = []
+            let orders = order.split(";")
+            orders.map((ord)=>{
+                ord = ord.split(",")
+                let direction = ord[1]
+                if(ord[0].indexOf(".") > -1)
+                {
+                    let tmp = ord[0].split(".")
+                    let modelName  = tmp[0]
+                    let colName = tmp[1]
+                    ord  = [ modelName, colName, direction ]
+                    
+                }
+                orderArr.push(ord)
+            })
+        }
+
+        return orderArr;
     }
 }
 

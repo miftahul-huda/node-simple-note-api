@@ -10,7 +10,8 @@ const NoteModel = require("./modules/models/notemodel")
 
 const sequelize = new Sequelize(process.env.DBNAME, process.env.DBUSER, process.env.DBPASSWORD, {
     host: process.env.DBHOST,
-    dialect: process.env.DBENGINE  
+    dialect: process.env.DBENGINE,
+    logging: false
 });
 
 
@@ -22,6 +23,9 @@ class Initialization {
         ProjectModel.initialize(sequelize, force)
         NoteModel.initialize(sequelize, force)
         
+        NoteModel.belongsTo(CategoryModel, {foreignKey: 'category_id'});
+        NoteModel.belongsTo(ProjectModel, {foreignKey: 'project_id'});
+
         await sequelize.sync();
     }
 }

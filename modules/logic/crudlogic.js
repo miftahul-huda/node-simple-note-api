@@ -76,6 +76,11 @@ class CrudLogic {
                     where 
             ]}
 
+
+            let includes = this.getModelIncludes();
+            if(includes != null)
+                opt.include = includes;
+                
             let os  = await CurrentModel.findAndCountAll(opt)
             return { success: true, payload: os }
         }
@@ -191,6 +196,11 @@ class CrudLogic {
     }
 
     static getDefaultWhere()
+    {
+        return null;
+    }
+
+    static getModelIncludes()
     {
         return null;
     }
