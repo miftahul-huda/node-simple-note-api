@@ -1,4 +1,7 @@
 [
     { "path" :  "", "router"  : "./routes/web" },
-    { "path" :  "/sample", "router"  : "./routes/sample", "logic" : "./modules/logic/sample_logic" }
+    { "path" :  "/sample", "router"  : "./routes/sample", "logic" : "./modules/logic/sample_logic" },
+    { "path" :  "/categories", "router"  : "./routes/category", "logic" : "./modules/logic/category_logic" },
+    { "path" :  "/projects", "router"  : "./routes/project", "logic" : "./modules/logic/project_logic" },
+    { "path" :  "/notes", "router"  : "./routes/note", "logic" : "./modules/logic/note_logic" }
 ]

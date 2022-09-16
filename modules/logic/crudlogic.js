@@ -20,7 +20,10 @@ class CrudLogic {
 
     static async create(o)
     {
-        o = initCreate(o);
+        o = this.initCreate(o);
+
+        console.log("o")
+        console.log(o)
 
         const CurrentModel = this.getModel();
 
@@ -60,9 +63,7 @@ class CrudLogic {
                 opt.order = order;
             else
             {
-                order = this.getOrder();
-                if(order != null)
-                    opt.order = order;
+                opt.order = this.getOrder();
             }
 
             let defaultWhere =  this.getDefaultWhere();
@@ -85,11 +86,15 @@ class CrudLogic {
     }
 
  
-    static async findByKeyword(search, offset=null, limit=null)
+    static async findByKeyword(search, offset=null, limit=null, order=null)
     {
         let where = this.getWhere(search);
-        let order = this.getOrder();
+
+        if(order == null)
+            order = this.getOrder();
+
         try {
+
             let result = await this.findAll(where, offset, limit, order);
             return result
         }
@@ -115,7 +120,7 @@ class CrudLogic {
 
     static async update(id,  o)
     {
-        o = initUpdate(o);
+        o = this.initUpdate(o);
 
         let result = this.validateUpdate(o);
         let pk = this.getPk();

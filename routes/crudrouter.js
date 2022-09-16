@@ -1,4 +1,6 @@
 class CrudRouter {
+
+
     static getRouter(logic)
     {
         var express = require('express');
@@ -17,6 +19,7 @@ class CrudRouter {
                 res.send(savedO);
             }).catch(function (err){
                 console.log("error")
+                console.log(err)
                 res.send(err);
             })
         })
@@ -25,8 +28,24 @@ class CrudRouter {
             me.init(req, res);
             let logic = router.logic;
             logic.session = req.session;
-            console.log(logic);
-            logic.findAll().then(function (os)
+
+            let offset = req.query.offset;
+            let limit = req.query.limit;
+            let sort = req.query.sort;
+
+            let order = sort;
+            let orderArr = null;
+            if(order != null)
+            {
+                orderArr = []
+                let orders = order.split(";")
+                orders.map((ord)=>{
+                    ord = ord.split(",")
+                    orderArr.push(ord)
+                })
+            }
+
+            logic.findAll(null, offset, limit, orderArr ).then(function (os)
             {
                 res.send(os);
             }).catch(function (err){
@@ -43,113 +62,34 @@ class CrudRouter {
             logic.session = req.session;
             let search = req.params.search;
         
-            logic.findByKeyword(search).then(function (os)
-            {
-                
-                res.send(os);
-            }).catch(function (err){
-                console.log("error")
-                console.log(err)
-                res.send(err);
-            })
-        })
-        
-        router.get('/find/:search/:offset/:limit', function (req, res){
-        
-            me.init(req, res);
-            let logic = router.logic;
-            logic.session = req.session;
-            let offset = req.params.offset;
-            let limit = req.params.limit;
-            let search = req.params.search;
-        
-            logic.findByKeyword(search, offset, limit).then(function (os)
-            {
-                
-                res.send(os);
-            }).catch(function (err){
-                console.log("error")
-                console.log(err)
-                res.send(err);
-            })
-        })
+            let offset = req.query.offset;
+            let limit = req.query.limit;
+            let sort = req.query.sort;
 
-        router.get('/find/:search/:offset/:limit/:sortcol/:sortdir', function (req, res){
-        
-            me.init(req, res);
-            let logic = router.logic;
-            logic.session = req.session;
-            let offset = req.params.offset;
-            let limit = req.params.limit;
-            let search = req.params.search;
-            let sortCol = req.params.sortcol;
-            let sortDir = req.params.sortdir;
-        
-            logic.findByKeyword(search, offset, limit, [[sortCol, sortDir]]).then(function (os)
+            let order = sort;
+            let orderArr = null;
+            if(order != null)
             {
-                
-                res.send(os);
-            }).catch(function (err){
-                console.log("error")
-                console.log(err)
-                res.send(err);
-            })
-        })
-        
-        
-
-        router.get('/:offset/:limit', function (req, res, next){
-        
-            me.init(req, res);
-            let logic = router.logic;
-            logic.session = req.session;
-            let offset = req.params.offset;
-            let limit = req.params.limit;
-
-            if(isNaN(offset) || isNaN(limit))
-                next();
-            else
-            {
-                logic.findAll(null, offset, limit).then(function (os)
-                {
-                    res.send(os);
-                }).catch(function (err){
-                    console.log("error")
-                    console.log(err)
-                    res.send(err);
+                orderArr = []
+                let orders = order.split(";")
+                orders.map((ord)=>{
+                    ord = ord.split(",")
+                    orderArr.push(ord)
                 })
             }
-            
-        })
 
-
-        router.get('/:offset/:limit/:sortcol/:sortdir', function (req, res, next){
-        
-            me.init(req, res);
-            let logic = router.logic;
-            logic.session = req.session;
-            let offset = req.params.offset;
-            let limit = req.params.limit;
-            let sortCol = req.params.sortcol;
-            let sortDir = req.params.sortdir;
-        
-            if(isNaN(offset) || isNaN(limit))
-                next();
-            else
+            logic.findByKeyword(search, offset, limit, orderArr).then(function (os)
             {
-                logic.findAll(null, offset, limit, [[sortCol, sortDir]]).then(function (os)
-                {
-                    res.send(os);
-                }).catch(function (err){
-                    console.log("error")
-                    console.log(err)
-                    res.send(err);
-                })
-            }
-            
+                res.send(os);
+            }).catch(function (err){
+                console.log("error")
+                console.log(err)
+                res.send(err);
+            })
         })
         
-        router.get('/get/:id', function (req, res){
+        
+        router.get('/:id', function (req, res){
 
             me.init(req, res);
             let id = req.params.id;
@@ -164,7 +104,7 @@ class CrudRouter {
             })
         })
         
-        router.post('/update/:id', function (req, res){
+        router.put('/:id', function (req, res){
 
             me.init(req, res);
             let o = req.body;
@@ -180,7 +120,7 @@ class CrudRouter {
             })
         })
         
-        router.get('/delete/:id', function (req, res){
+        router.delete('/:id', function (req, res){
 
             me.init(req, res);
             let id = req.params.id;
