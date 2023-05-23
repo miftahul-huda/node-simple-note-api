@@ -18,6 +18,8 @@ class CategoryLogic extends CrudLogic {
                 [Op.like] : "" + this.session.user + ""
             }
         }
+
+        where = {};
         return where;        
     }
 

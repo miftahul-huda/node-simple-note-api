@@ -21,7 +21,7 @@ class NoteLogic extends CrudLogic {
     {
         let where = {
             title : {
-                [Op.like] : "%" + search + "%"
+                [Op.iLike] : "%" + search + "%"
             } 
         }
         return where;
@@ -34,6 +34,7 @@ class NoteLogic extends CrudLogic {
                 [Op.like] : "" + this.session.user + ""
             } 
         }
+
         return where;        
     }
 

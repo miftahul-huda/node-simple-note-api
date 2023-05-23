@@ -22,6 +22,7 @@ class ProjectLogic extends CrudLogic {
                 [Op.like] : "" + this.session.user + ""
             } 
         }
+        where = {};
         return where;        
     }
 

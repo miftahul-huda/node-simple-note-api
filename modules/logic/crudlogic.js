@@ -155,13 +155,29 @@ class CrudLogic {
     static async delete(id)
     {
         try{
+            let result = {};
             let pk = this.getPk();
             const CurrentModel = this.getModel();
             let where = {};
             where[pk] = id;
 
-            let result = await CurrentModel.destroy({ where: where });
-            return { success: true, payload: result }
+            let ids = id.split(",");
+            console.log("ids")
+            console.log(ids)
+            if(ids.length > 0)
+            {
+                where[pk] = {
+                    [Op.in] : ids
+                }
+
+                result = await CurrentModel.destroy({ where: where });
+                return { success: true, payload: result }
+            }
+            else
+            {
+                result = await CurrentModel.destroy({ where: where });
+                return { success: true, payload: result }
+            }
         }
         catch (error)
         {
