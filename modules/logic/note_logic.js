@@ -13,6 +13,46 @@ class NoteLogic extends CrudLogic {
         return model;
     }
 
+    static validateCreate(o)
+    {
+        if(o.project_id == null || o.project_id == -1)
+        {
+            return { success: false, message: 'Please set the project' }
+        }
+
+        if(o.category_id == null || o.category_id == -1)
+        {
+            return { success: false, message: 'Please set the category' }
+        }
+
+        if(o.title == null || o.title == "")
+        {
+            return { success: false, message: 'Please set the title' }
+        }
+
+        return {success: true}
+    }
+
+    static validateUpdate(o)
+    {
+        if(o.project_id == null || o.project_id == -1)
+        {
+            return { success: false, message: 'Please set the project' }
+        }
+
+        if(o.category_id == null || o.category_id == -1)
+        {
+            return { success: false, message: 'Please set the category' }
+        }
+
+        if(o.title == null || o.title == "")
+        {
+            return { success: false, message: 'Please set the title' }
+        }
+
+        return {success: true}
+    }
+
     static getPk(){
         return "id";
     }

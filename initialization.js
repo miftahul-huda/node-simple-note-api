@@ -11,7 +11,7 @@ const NoteModel = require("./modules/models/notemodel")
 const sequelize = new Sequelize(process.env.DBNAME, process.env.DBUSER, process.env.DBPASSWORD, {
     host: process.env.DBHOST,
     dialect: process.env.DBENGINE,
-    logging: true
+    logging: false
 });
 
 
