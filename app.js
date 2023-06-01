@@ -31,20 +31,22 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-*/
+
 const corsOptions ={
   origin:['http://localhost:8080'], 
   credentials:true,            //access-control-allow-credentials:true
   optionSuccessStatus:200,
 }
-app.use(cors(corsOptions));
+*/
+app.use(cors());
 
 
 
 //Consider all request as application/json
 app.use(express.json({type: '*/*'}));
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 app.use(session({
   store: new DatastoreStore({
@@ -96,6 +98,9 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+
+  console.log("error handler")
+  console.log(err);
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

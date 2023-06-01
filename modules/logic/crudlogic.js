@@ -22,9 +22,6 @@ class CrudLogic {
     {
         o = this.initCreate(o);
 
-        console.log("o")
-        console.log(o)
-
         const CurrentModel = this.getModel();
 
         let result = this.validateCreate(o);
@@ -174,8 +171,6 @@ class CrudLogic {
             where[pk] = id;
 
             let ids = id.split(",");
-            console.log("ids")
-            console.log(ids)
             if(ids.length > 0)
             {
                 where[pk] = {

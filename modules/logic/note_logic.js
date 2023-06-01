@@ -144,8 +144,6 @@ class NoteLogic extends CrudLogic {
             
             opt.include = [ {model: ProjectModel, as: "project"}, { model: CategoryModel, as: "category"} ];
 
-            console.log(opt)
-
             let result = await model.findAndCountAll(opt)
             return { success: true, payload: result }
 
