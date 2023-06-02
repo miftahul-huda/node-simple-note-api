@@ -22,6 +22,9 @@ class CrudLogic {
     {
         o = this.initCreate(o);
 
+        console.log("o")
+        console.log(o)
+
         const CurrentModel = this.getModel();
 
         let result = this.validateCreate(o);
@@ -91,6 +94,48 @@ class CrudLogic {
     static async findByKeyword(search, offset=null, limit=null, order=null)
     {
         let where = this.getWhere(search);
+        let defaultWhere = this.getDefaultWhere();
+        if(defaultWhere == null)
+            defaultWhere = { 1: 1 };
+
+        where = {
+            [Op.and] :[
+                where,
+                defaultWhere
+            ]
+        }
+
+        if(order == null)
+            order = this.getOrder();
+
+        try {
+
+            let result = await this.findAll(where, offset, limit, order);
+            return result
+        }
+        catch(error)
+        {
+            throw { success: false, message: '', error: error };
+        }
+        
+    }
+
+    static async findByFilter(filter, offset=null, limit=null, order=null)
+    {
+        let where = this.getWhereFromFilter(filter);
+        let defaultWhere = this.getDefaultWhere();
+        if(defaultWhere == null)
+            defaultWhere = { 1: 1 };
+
+        where = {
+            [Op.and] :[
+                where,
+                defaultWhere
+            ]
+        }
+
+        console.log("findByFilter")
+        console.log(where)
 
         if(order == null)
             order = this.getOrder();
@@ -171,6 +216,8 @@ class CrudLogic {
             where[pk] = id;
 
             let ids = id.split(",");
+            console.log("ids")
+            console.log(ids)
             if(ids.length > 0)
             {
                 where[pk] = {
@@ -226,6 +273,73 @@ class CrudLogic {
     static getModelIncludes()
     {
         return null;
+    }
+
+    static getWhereFromFilter(filter)
+    {
+        console.log(filter)
+        let where = {
+            [Op.and]:[]
+        };
+
+        filter.map((item)=>{
+            let datafield = item.datafield;
+            let value = item.value;
+            if(item.operand == "equal")
+            {
+                let w = {};
+                w[item.datafield] = item.value;
+
+                console.log("w")
+                console.log(w)
+
+                where[Op.and].push(w);
+
+            }
+            else if(item.operand == "like")
+            {
+                let w = null;
+                let code = `w = { ${datafield} : {
+                    [Op.iLike] : '%${value}%'
+                }};`;
+
+                eval(code);
+                
+                console.log("w")
+                console.log(w)
+
+                where[Op.and].push(w);
+            }
+            else if(item.operand == "between")
+            {
+                let w = [];
+                let dts = item.value.split(" - ");
+                let dt1 = dts[0];
+                let dt2 = dts[1];
+                let wdt1 = [];
+                let wdt2 = [];
+
+                let ww = {
+                    [Op.and] : []
+                }
+                wdt1[item.datafield] = {
+                    [Op.gte] : dt1
+                }
+                wdt2[item.datafield] = {
+                    [Op.lte] : dt2
+                }
+
+                ww[Op.and].push(wdt1)
+                ww[Op.and].push(wdt2)
+
+                console.log("ww")
+                console.log(ww)
+
+                where[Op.and].push(ww);
+            }
+        });
+
+        return where;
     }
 }
 

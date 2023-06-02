@@ -48,12 +48,20 @@ app.use(express.json({type: '*/*'}));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-app.use(session({
+/*app.use(session({
   store: new DatastoreStore({
     dataset: new Datastore(),
     kind: 'express-sessions',
   }),
   secret: 'nodesimplenote', saveUninitialized: true, resave: false}));
+*/
+
+  app.use(session({
+    secret: 'nodesimplenote',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { }
+  }));
 
 //Dynamic routing based on configuration
 const fs = require('fs');
@@ -106,8 +114,8 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  //res.status(err.status || 500);
+  //res.render('error');
 });
 
 

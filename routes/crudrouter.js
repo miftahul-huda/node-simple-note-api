@@ -67,6 +67,29 @@ class CrudRouter {
                 res.send(err);
             })
         })
+
+        router.post('/find', function (req, res){
+        
+            me.init(req, res);
+            let logic = router.logic;
+            logic.session = req.session;
+            let filter = req.body;
+        
+            let offset = req.query.offset;
+            let limit = req.query.limit;
+            let sort = req.query.sort;
+
+            let orderArr = me.sortToArray(sort)
+
+            logic.findByFilter(filter, offset, limit, orderArr).then(function (os)
+            {
+                res.send(os);
+            }).catch(function (err){
+                console.log("error")
+                console.log(err)
+                res.send(err);
+            })
+        })
         
         
         router.get('/:id', function (req, res){
